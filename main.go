@@ -5,20 +5,25 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/jamesnetherton/m3u"
 )
 
 const (
 	// Port is the default port used
-	Port = 8080
+	Port = "8080"
 )
 
 func main() {
-	log.Printf("Starting server on port %v", Port)
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
+		port = Port
+	}
+	log.Printf("Starting server on port %v", port)
 
 	http.HandleFunc("/", thing)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", Port), nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), nil))
 }
 
 func thing(w http.ResponseWriter, r *http.Request) {
